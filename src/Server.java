@@ -1,81 +1,60 @@
 import javax.swing.*;
 
 import java.awt.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
-public class Server{
+public class Server implements IObservable{
     public static void main(String[] args) {
         // TODO Auto-generated method stub
 
         ServerFrame mimarco=new ServerFrame();
+
         mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-}
 
-class ServerFrame extends JFrame implements Runnable, IObservable{
-    ArrayList<ISubasta> subastas;
 
-    public ServerFrame(){
-
-        //this.observers = new ArrayList<>();
-
-        setBounds(1200,300,280,350);
-
-        JPanel panel= new JPanel();
-        panel.setLayout(new BorderLayout());
-
-        areatexto=new JTextArea();
-        panel.add(areatexto,BorderLayout.CENTER);
-        add(panel);
-        setVisible(true);
-        //notifyAllOferentes();
-        Thread thread =  new Thread(this);
-        thread.start();
 
     }
 
     @Override
     public void notifyAllOferentes() {
-
-
-        for (int i=0; i<subastas.size(); i++){ //hacer for correcto
-            //observers.get(i).notifyObservable();
-            try {
-                Socket socket=new Socket("127.0.0.1",9090);
-                //Socket socket2=new Socket("192.168.0.7",9090);
-                DataOutputStream streamToOferente = new DataOutputStream(socket.getOutputStream());
-                streamToOferente.writeUTF("respuesta"); //implementar respuesta
-
-               // DataOutputStream streamToOferente2 = new DataOutputStream(socket2.getOutputStream());
-               //streamToOferente2.writeUTF("respuesta linda"); //implementar respuesta
-
-               // socket2.close();
-               // streamToOferente2.close();
-                socket.close();
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-
-
-    @Override
-    public void addObserver(IObserver observer, int id) {
-        for (int i = 0; i<subastas.size(); i++){
-            subastas.get(i).addOferente((IOferente) observer);
-        }
+        //implementar
     }
 
     @Override
-    public void removeObserver(IObserver observer, int id) {
-        for (int i = 0; i<subastas.size(); i++){
-            subastas.get(i).removeOferente((IOferente) observer);
-        }
+    public void addObserver(IObserver observer) {
+        //implementar
+    }
+
+    @Override
+    public void removeObserver(IObserver observer) {
+        //implementar
+    }
+}
+
+class ServerFrame extends JFrame implements Runnable {
+
+    public ServerFrame(){
+
+        setBounds(1200,300,280,350);
+
+        JPanel panel= new JPanel();
+
+        panel.setLayout(new BorderLayout());
+
+        areatexto=new JTextArea();
+
+        panel.add(areatexto,BorderLayout.CENTER);
+
+        add(panel);
+
+        setVisible(true);
+
+        Thread thread =  new Thread(this);
+        thread.start();
+
     }
 
     private	JTextArea areatexto;
@@ -87,35 +66,16 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
             ServerSocket server = new ServerSocket(88);
 
             while (true) {
-                //System.out.println("while");
                 Socket socket = server.accept();
 
-                InputStream streamFromClient = socket.getInputStream();
-                ObjectInputStream objectStreamFromClient = new ObjectInputStream(streamFromClient);
+                DataInputStream streamFromClient = new DataInputStream(socket.getInputStream());
 
+                String input = streamFromClient.readUTF();
 
-                IObserver input = null;
-
-                try {
-                    input = (IObserver) objectStreamFromClient.readObject();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                if(input.getType() == 0){
-                    IOferente inputO = (IOferente) input;
-                    areatexto.setText(Integer.toString(inputO.getMonto()));
-                    notifyAllOferentes();
-                }else{
-
-                }
+                streamFromClient.close();
+                areatexto.setText(input);
 
                 socket.close();
-
-
-
-
-
             }
 
         } catch (IOException e) {
