@@ -1,6 +1,3 @@
-package Sockets;
-
-
 import javax.swing.*;
 
 import java.awt.*;
@@ -9,7 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server {
+public class Server implements IObservable{
     public static void main(String[] args) {
         // TODO Auto-generated method stub
 
@@ -19,6 +16,21 @@ public class Server {
 
 
 
+    }
+
+    @Override
+    public void notifyAllOferentes() {
+        //implementar
+    }
+
+    @Override
+    public void addObserver(IObserver observer) {
+        //implementar
+    }
+
+    @Override
+    public void removeObserver(IObserver observer) {
+        //implementar
     }
 }
 
@@ -40,6 +52,9 @@ class ServerFrame extends JFrame implements Runnable {
 
         setVisible(true);
 
+        Thread thread =  new Thread(this);
+        thread.start();
+
     }
 
     private	JTextArea areatexto;
@@ -48,15 +63,20 @@ class ServerFrame extends JFrame implements Runnable {
     public void run() {
         //Pasan varas en el hilo
         try {
-            ServerSocket server = new ServerSocket(9999);
+            ServerSocket server = new ServerSocket(88);
 
-            Socket socket = server.accept();
+            while (true) {
+                Socket socket = server.accept();
 
-            DataInputStream streamFromClient = new DataInputStream(socket.getInputStream());
+                DataInputStream streamFromClient = new DataInputStream(socket.getInputStream());
 
-            String input = streamFromClient.readUTF();
+                String input = streamFromClient.readUTF();
 
-            //Pasan consas en este servidor
+                streamFromClient.close();
+                areatexto.setText(input);
+
+                socket.close();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
