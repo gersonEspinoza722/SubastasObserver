@@ -1,13 +1,11 @@
-package Views;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
-public class ObjectAuctionView {
+
+public class ObjectAuctionView implements IObserver{
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
@@ -18,7 +16,12 @@ public class ObjectAuctionView {
 
     }
 
+    @Override
+    public void notifyObservable() {
+        //implementar
+    }
 }
+
 
 
 class AuctionFrame extends JFrame{
@@ -68,7 +71,7 @@ class AuctionPanel extends JPanel{
                 int value = Integer.valueOf(campo1.getText());
 
                 try {
-                    Socket socket=new Socket(serverIP,9999);
+                    Socket socket=new Socket(serverIP,88);
                     DataOutputStream streamToServer = new DataOutputStream(socket.getOutputStream());
                     streamToServer.writeUTF(String.valueOf(value));
 
