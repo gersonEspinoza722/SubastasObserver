@@ -90,19 +90,9 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
         }
     }
 
-    @Override
-    public String getIp() {
-        return usuario.ip;
-    }
 
     @Override
-    public int getType() {
-        return this.type;
-    }
-
-
-    @Override
-    public void aceptarOferta(int monto, Usuario usuario) {
+    public void rechazarOferta() {
 
     }
 
