@@ -1,5 +1,6 @@
 public abstract class Usuario {
     protected String username;
+    protected String ip;
 
     public Usuario(String username) {
         this.username = username;

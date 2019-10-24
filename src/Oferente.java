@@ -10,7 +10,28 @@ public class Oferente extends Usuario implements IOferente{
     }
 
     @Override
-    public void ofrecerMonto(Subasta subasta) {
+    public void ofrecerMonto() {
 
+    }
+
+    @Override
+    public int getMonto() {
+        return 0;
+    }
+
+
+    @Override
+    public void notifyObservable() {
+
+    }
+
+    @Override
+    public String getIp() {
+        return null;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
     }
 }

@@ -25,4 +25,19 @@ public class Subastador extends Usuario implements ISubastador{
     public void enviarMensaje(Usuario usuario) {
 
     }
+
+    @Override
+    public void notifyObservable() {
+
+    }
+
+    @Override
+    public String getIp() {
+        return null;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
 }

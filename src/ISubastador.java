@@ -1,4 +1,4 @@
-public interface ISubastador {
+public interface ISubastador extends IObserver{
     void aceptarOferta(int monto, Usuario usuario);
     void cerrarSubasta();
     void cancelarSubasta();
