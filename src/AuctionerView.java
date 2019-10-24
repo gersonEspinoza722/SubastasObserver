@@ -33,7 +33,7 @@ class AuctionerFrame extends JFrame{
 
 }
 
-class AuctionerPanel extends JPanel implements IOferente, Runnable{
+class AuctionerPanel extends JPanel implements ISubastador, Runnable{
     private Usuario usuario;
     private ISubasta subasta;
 
@@ -47,8 +47,8 @@ class AuctionerPanel extends JPanel implements IOferente, Runnable{
         campo1=new JTextField(20);
         add(campo1);
         sendButton=new JButton("Enviar");
-        SendOffer sendOfferEvent = new SendOffer();
-        sendButton.addActionListener(sendOfferEvent);
+        SendRechazo sendRechazo = new SendRechazo();
+        sendButton.addActionListener(sendRechazo);
         add(sendButton);
         Thread thread =  new Thread(this);
         thread.start();
@@ -117,7 +117,7 @@ class AuctionerPanel extends JPanel implements IOferente, Runnable{
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
 
-                objectStreamToServer.writeObject(this);
+                objectStreamToServer.writeObject(subasta);
 
                 socket.close();
 
@@ -129,36 +129,37 @@ class AuctionerPanel extends JPanel implements IOferente, Runnable{
     }
 
     @Override
-    public String getIp() {
-        return usuario.ip;
-    }
-
-    @Override
-    public int getType() {
-        return this.type;
-    }
-
-    @Override
-    public void unirSubasta(Subasta subasta) {
-        this.subasta = subasta;
-    }
-
-    @Override
-    public void ofrecerMonto() {
+    public void rechazarOferta() {
+        //le ponemos a "subasta" el id
         notifyObservable();
     }
 
     @Override
-    public int getMonto() {
-        return Integer.valueOf(campo1.getText());
+    public void cerrarSubasta() {
+
+    }
+
+    @Override
+    public void cancelarSubasta() {
+
+    }
+
+    @Override
+    public void enviarMensaje(Usuario usuario) {
+
+    }
+
+    @Override
+    public void createAuction() {
+
     }
 
 
-    private class SendOffer implements ActionListener {
+    private class SendRechazo implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ofrecerMonto();
+            rechazarOferta();
         }
     }
 
