@@ -3,4 +3,5 @@ public interface ISubastador extends IObserver{
     void cerrarSubasta();
     void cancelarSubasta();
     void enviarMensaje(Usuario usuario);
+    void createAuction();
 }

@@ -1,11 +1,15 @@
+import java.util.ArrayList;
 import java.util.Date;
 
-public class Subasta {
+public class Subasta implements ISubasta{
+    int id;
     private Date horaInicio;
     private Date horaFinal;
     private Producto producto;
     private int status;
     private int tope;
+    private ArrayList<IOferente> oferentes;
+    private ISubastador subastador;
 
     public Subasta(Date horaInicio, Date horaFinal, Producto producto, int tope) {
         this.horaInicio = horaInicio;
@@ -13,6 +17,26 @@ public class Subasta {
         this.producto = producto;
         this.status = Status.INICIADA;
         this.tope = tope;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public ArrayList<IOferente> getOferentes() {
+        return oferentes;
+    }
+
+    public void setOferentes(ArrayList<IOferente> oferentes) {
+        this.oferentes = oferentes;
     }
 
     public Date getHoraInicio() {
@@ -49,6 +73,16 @@ public class Subasta {
 
     public int getTope() {
         return tope;
+    }
+
+    @Override
+    public void addOferente(IOferente oferente) {
+
+    }
+
+    @Override
+    public void removeOferente(IOferente oferente) {
+
     }
 
     public void setTope(int tope) {
