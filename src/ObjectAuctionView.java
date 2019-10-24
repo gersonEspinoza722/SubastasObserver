@@ -34,7 +34,7 @@ class AuctionFrame extends JFrame{
 
 }
 
-class AuctionPanel extends JPanel implements IOferente, Runnable{
+class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
     private Usuario usuario;
     private ISubasta subasta;
 
@@ -130,13 +130,8 @@ class AuctionPanel extends JPanel implements IOferente, Runnable{
     }
 
     @Override
-    public String getIp() {
-        return usuario.ip;
-    }
-
-    @Override
-    public int getType() {
-        return this.type;
+    public Class getType() {
+        return this.getClass();
     }
 
     @Override
