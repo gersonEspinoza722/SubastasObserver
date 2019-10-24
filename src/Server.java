@@ -12,18 +12,15 @@ public class Server{
 
         ServerFrame mimarco=new ServerFrame();
         mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-
     }
 }
 
-class ServerFrame extends JFrame implements Runnable,IObservable {
-    ArrayList<IOferente> observers;
+class ServerFrame extends JFrame implements Runnable, IObservable{
+    ArrayList<ISubasta> subastas;
 
     public ServerFrame(){
 
-        this.observers = new ArrayList<>();
+        //this.observers = new ArrayList<>();
 
         setBounds(1200,300,280,350);
 
@@ -34,7 +31,7 @@ class ServerFrame extends JFrame implements Runnable,IObservable {
         panel.add(areatexto,BorderLayout.CENTER);
         add(panel);
         setVisible(true);
-
+        //notifyAllOferentes();
         Thread thread =  new Thread(this);
         thread.start();
 
@@ -44,32 +41,41 @@ class ServerFrame extends JFrame implements Runnable,IObservable {
     public void notifyAllOferentes() {
 
 
-        //for (int i=0; i<observers.size(); i++){
-           // observers.get(i).notifyObservable();
+        for (int i=0; i<subastas.size(); i++){ //hacer for correcto
+            //observers.get(i).notifyObservable();
             try {
-                Socket socket=new Socket("127.0.0.1",89);
+                Socket socket=new Socket("127.0.0.1",9090);
+                //Socket socket2=new Socket("192.168.0.7",9090);
                 DataOutputStream streamToOferente = new DataOutputStream(socket.getOutputStream());
                 streamToOferente.writeUTF("respuesta"); //implementar respuesta
 
-                streamToOferente.close();
+               // DataOutputStream streamToOferente2 = new DataOutputStream(socket2.getOutputStream());
+               //streamToOferente2.writeUTF("respuesta linda"); //implementar respuesta
 
+               // socket2.close();
+               // streamToOferente2.close();
+                socket.close();
 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-       // }
+        }
     }
 
 
 
     @Override
-    public void addObserver(IObserver observer) {
-        observers.add((IOferente) observer);
+    public void addObserver(IObserver observer, int id) {
+        for (int i = 0; i<subastas.size(); i++){
+            subastas.get(i).addOferente((IOferente) observer);
+        }
     }
 
     @Override
-    public void removeObserver(IObserver observer) {
-        observers.remove(observer);
+    public void removeObserver(IObserver observer, int id) {
+        for (int i = 0; i<subastas.size(); i++){
+            subastas.get(i).removeOferente((IOferente) observer);
+        }
     }
 
     private	JTextArea areatexto;
@@ -81,6 +87,7 @@ class ServerFrame extends JFrame implements Runnable,IObservable {
             ServerSocket server = new ServerSocket(88);
 
             while (true) {
+                //System.out.println("while");
                 Socket socket = server.accept();
 
                 InputStream streamFromClient = socket.getInputStream();
@@ -95,19 +102,20 @@ class ServerFrame extends JFrame implements Runnable,IObservable {
                     e.printStackTrace();
                 }
 
-                if(input.getType()==0){
-                    IOferente inputO=(IOferente) input;
+                if(input.getType() == 0){
+                    IOferente inputO = (IOferente) input;
                     areatexto.setText(Integer.toString(inputO.getMonto()));
+                    notifyAllOferentes();
                 }else{
 
                 }
 
-                streamFromClient.close();
-
-
-                notifyAllOferentes();
-
                 socket.close();
+
+
+
+
+
             }
 
         } catch (IOException e) {

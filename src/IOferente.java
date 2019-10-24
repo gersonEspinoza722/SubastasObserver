@@ -1,5 +1,5 @@
 public interface IOferente extends IObserver {
-    void unirSubasta(Subasta subasta);
+    void unirSubasta(Subasta subasta); //se hace desde IObservable
     void ofrecerMonto();
     int getMonto();
 }

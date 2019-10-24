@@ -18,7 +18,7 @@ public class ObjectAuctionView{
 
 
 
-class AuctionFrame extends JFrame implements Runnable{
+class AuctionFrame extends JFrame{
 
     public AuctionFrame(){
 
@@ -29,39 +29,15 @@ class AuctionFrame extends JFrame implements Runnable{
 
         setVisible(true);
 
-        Thread thread =  new Thread(this);
-        thread.start();
-    }
-    @Override
-    public void run() {
-        //Pasan varas en el hilo
-        try {
-            ServerSocket server = new ServerSocket(89);
-
-            while (true) {
-                Socket socket = server.accept();
-
-                DataInputStream streamFromClient = new DataInputStream(socket.getInputStream());
-
-                String input = streamFromClient.readUTF();
-
-                streamFromClient.close();
-                System.out.println(input);
-
-                socket.close();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 
 }
 
-class AuctionPanel extends JPanel implements IOferente{
+class AuctionPanel extends JPanel implements IOferente, Runnable{
     private Usuario usuario;
-    private Subasta subasta;
+    private ISubasta subasta;
+
     private static final int type = 0;
 
     public AuctionPanel(){
@@ -75,7 +51,45 @@ class AuctionPanel extends JPanel implements IOferente{
         SendOffer sendOfferEvent = new SendOffer();
         sendButton.addActionListener(sendOfferEvent);
         add(sendButton);
+        Thread thread =  new Thread(this);
+        thread.start();
     }
+    @Override
+    public void run() {
+        //Pasan varas en el hilo
+        try {
+            ServerSocket server = new ServerSocket(9090);
+
+            while (true) {
+                Socket socket = server.accept();
+
+                InputStream streamFromClient = socket.getInputStream();
+                ObjectInputStream objectStreamFromClient = new ObjectInputStream(streamFromClient);
+
+                //validacion de objetos
+                IObservable input = null;
+                try {
+                    input = (IObservable) objectStreamFromClient.readObject();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                ISubasta inputO = (ISubasta) input;
+                campo1.setText(Integer.toString(inputO.getTope()));
+                //notifyAllOferentes();
+
+                streamFromClient.close();
+                System.out.println(input);
+
+                socket.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public Usuario getUsuario() {
         return usuario;
@@ -85,11 +99,11 @@ class AuctionPanel extends JPanel implements IOferente{
         this.usuario = usuario;
     }
 
-    public Subasta getSubasta() {
+    public ISubasta getSubasta() {
         return subasta;
     }
 
-    public void setSubasta(Subasta subasta) {
+    public void setSubasta(ISubasta subasta) {
         this.subasta = subasta;
     }
 

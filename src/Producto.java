@@ -1,4 +1,5 @@
 public class Producto {
+    private String nombre;
     private int precioInicial;
     private int precioFinal;
 
