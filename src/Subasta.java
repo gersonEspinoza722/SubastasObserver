@@ -4,14 +4,14 @@ public class Subasta {
     private Date horaInicio;
     private Date horaFinal;
     private Producto producto;
-    private Character status; //clase? enum?
+    private int status;
     private int tope;
 
-    public Subasta(Date horaInicio, Date horaFinal, Producto producto, Character status, int tope) {
+    public Subasta(Date horaInicio, Date horaFinal, Producto producto, int tope) {
         this.horaInicio = horaInicio;
         this.horaFinal = horaFinal;
         this.producto = producto;
-        this.status = status;
+        this.status = Status.INICIADA;
         this.tope = tope;
     }
 
@@ -39,7 +39,7 @@ public class Subasta {
         this.producto = producto;
     }
 
-    public Character getStatus() {
+    public int getStatus() {
         return status;
     }
 
