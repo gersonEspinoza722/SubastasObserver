@@ -5,7 +5,11 @@ import java.io.*;
 import java.net.*;
 
 public class ObjectAuctionView{
+    public ObjectAuctionView() {
+        AuctionFrame mimarco=new AuctionFrame();
 
+ //       mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
@@ -89,7 +93,7 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
 
                 streamFromClient.close();
                 socket.close();
-                if (inputO != null && ((Subasta) inputO).getStatus() == 0){
+                if (inputO != null && ((Subasta) inputO).getStatus() == 1){
                     respuesta.setText("TOPE ACTUAL: " + inputO.getTope() +" ERES EL GANADOR!!!");
                 }
                 if (inputO != null && ((Subasta) inputO).getStatus() == 2) {
@@ -131,16 +135,14 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
         ofertaMessage = null;
         Subasta sub = new Subasta();
         sub.setId(Integer.valueOf(campoSub.getText()));
-        try {
-            ofertaMessage= new OfertaMessage(sub, Integer.valueOf(campo1.getText()), InetAddress.getLocalHost().getHostAddress());
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+            ofertaMessage= new OfertaMessage(sub, Integer.valueOf(campo1.getText()),ip.getText());
+
+
 
 
         try {
-                Socket socket=new Socket(ip.getText(),88);
+                Socket socket=new Socket("127.0.0.1",88);
                // DataOutputStream streamToServer = new DataOutputStream(socket.getOutputStream());
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);

@@ -6,6 +6,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class AuctionerView {
+    public AuctionerView() {
+
+        AuctionerFrame mimarco=new AuctionerFrame();
+
+        //mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
     public static void main(String[] args) {
         // TODO Auto-generated method stub
 
@@ -49,8 +56,8 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
         add(campo1);
         respuesta=new JTextField(50);
         add(respuesta);
-        sendButton=new JButton("Enviar");
 
+        sendButton=new JButton("Rechazar oferta");
         SendRechazo sendRechazo = new SendRechazo();
         sendButton.addActionListener(sendRechazo);
         add(sendButton);
@@ -132,7 +139,7 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
         //rechazoMessage = new RechazoMessage(sub);
 
             try {
-                Socket socket=new Socket("127.0.0.7",88);
+                Socket socket=new Socket("127.0.0.1",88);
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
 

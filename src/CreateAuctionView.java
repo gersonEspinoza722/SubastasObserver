@@ -9,6 +9,12 @@ import java.net.UnknownHostException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 public class CreateAuctionView {
+    public CreateAuctionView() {
+        CreateAuctionFrame mimarco=new CreateAuctionFrame();
+
+        //mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
     public static void main(String[] args) {
         // TODO Auto-generated method stub
 

@@ -8,14 +8,18 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class OferenteLogInView{
+    public OferenteLogInView() {
+        LogInFrame mimarco=new LogInFrame();
 
+        //mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
-        public static void main(String[] args) {
+    public static void main(String[] args) {
             // TODO Auto-generated method stub
 
             LogInFrame mimarco=new LogInFrame();
 
-            mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            //mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 }
 
@@ -56,10 +60,13 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
 
 
 
+
         sendButton = new JButton("Agregar");
         SendOffer sendOfferEvent = new SendOffer();
         sendButton.addActionListener(sendOfferEvent);
         add(sendButton);
+
+
     }
 
 
@@ -86,14 +93,12 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
 
         logInMessage=null;
 
-        try {
-            logInMessage = new LogInMessage(Integer.valueOf(idSubastaField.getText()), InetAddress.getLocalHost().getHostAddress());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+
+            logInMessage = new LogInMessage(Integer.valueOf(idSubastaField.getText()), ip.getText());
+
 
         try {
-                Socket socket = new Socket(ip.getText(), 88);
+                Socket socket = new Socket("127.0.0.1", 88);
                 OutputStream streamToServer = socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer = new ObjectOutputStream(streamToServer);
 
@@ -144,7 +149,9 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
 
 
 
+
     private JTextField idSubastaField;
     private JTextField ip;
     private JButton sendButton;
+    private JButton exit;
 }

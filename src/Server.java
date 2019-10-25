@@ -40,10 +40,11 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
     public void notifyWinner(ISubasta subastaNotify){
         try {
             OfertaMessage oferta = (OfertaMessage) subastaNotify.getOfertas().get(subastaNotify.getOfertas().size()-1);
-            Socket socket=new Socket(oferta.getIp(),9090);
+            System.out.println("el ganadoe ip es: "+oferta.getIp());
+            Socket socket=new Socket(oferta.getIp(),9030);
             OutputStream streamToServer=socket.getOutputStream();
             ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
-            ((Subasta)subastaNotify).setStatus(0);
+            ((Subasta)subastaNotify).setStatus(1);
 
             objectStreamToServer.writeObject(subastaNotify);
             socket.close();
@@ -59,11 +60,14 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
         ArrayList<IOferente> oferentesNotify = subastaNotify.getOferentes();
         for (int i=0; i<oferentesNotify.size(); i++){ //hacer for correcto
             try {
+                System.out.println("Trata de conectar a"+ oferentesNotify.get(i).getIp());
                 Socket socket=new Socket(oferentesNotify.get(i).getIp(),9030);
+
+                //Socket socket=new Socket("192.168.0.11",9030);
 
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
-
+                ((Subasta)subastaNotify).setStatus(3);
                 objectStreamToServer.writeObject(subastaNotify);
                 objectStreamToServer.close();
                 socket.close();
@@ -194,12 +198,12 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
                     for(int i = 0; i<this.subastas.size(); i++){
                         ISubasta subastaTemp =  (Subasta)((CerrarMessage)inputO).getSubasta();
                         if(subastaTemp.getId() == subastas.get(i).getId()){
-                            //System.out.println("Encontró subasta para rechazar");
+
 
                             notifyWinner(subastas.get(i));
 
                             areatexto.setText(String.valueOf(subastas.get(i).getOfertas().size()));
-                            notifyAllOferentes(subastas.get(i));
+                            //notifyAllOferentes(subastas.get(i));
 
                         }
                     }
