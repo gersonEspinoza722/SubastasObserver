@@ -50,6 +50,7 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
         respuesta=new JTextField(50);
         add(respuesta);
         sendButton=new JButton("Enviar");
+
         SendRechazo sendRechazo = new SendRechazo();
         sendButton.addActionListener(sendRechazo);
         add(sendButton);
@@ -58,6 +59,11 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
         SendEnd sendEnd= new SendEnd();
         endButton.addActionListener(sendEnd);
         add(endButton);
+
+        cancelButton=new JButton("CANCELAR");
+        SendCancel sendCancel= new SendCancel();
+        cancelButton.addActionListener(sendCancel);
+        add(cancelButton);
 
         Thread thread =  new Thread(this);
         thread.start();
@@ -169,7 +175,12 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
 
     @Override
     public void cancelarSubasta() {
+        Subasta sub = new Subasta();
+        sub.setId(Integer.valueOf(campo1.getText()));
 
+        message = new CancelarMessage(sub);
+
+        notifyObservable();
     }
 
     @Override
@@ -203,11 +214,20 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
         }
     }
 
+    private class SendCancel implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cancelarSubasta();
+        }
+    }
+
 
 
     private JTextField campo1;
     private JButton sendButton;
     private JButton endButton;
+    private JButton cancelButton;
     private JTextField respuesta;
     private String serverIP;
 

@@ -1,10 +1,9 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 
-public class CerrarMessage implements IMessage, Serializable,IObserver {
+public class CancelarMessage implements IMessage, IObserver, Serializable {
     private Subasta subasta;
 
-    public CerrarMessage(Subasta subasta) {
+    public CancelarMessage(Subasta subasta) {
         this.subasta = subasta;
     }
 
@@ -15,15 +14,11 @@ public class CerrarMessage implements IMessage, Serializable,IObserver {
 
     @Override
     public int getType() {
-        return 4;
+        return 5;
     }
 
     @Override
     public ISubasta getSubasta() {
-        return this.subasta;
+        return subasta;
     }
-
-
-
-
 }

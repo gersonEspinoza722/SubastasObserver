@@ -122,8 +122,6 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
 
                 try {
                     input = (IObserver) objectStreamFromClient.readObject();
-                    //System.out.println("Encontro el objeto");
-                    //System.out.println("TIPO: "+input.getType());
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -197,6 +195,24 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
                             //System.out.println("Encontró subasta para rechazar");
 
                             notifyWinner(subastas.get(i));
+
+                            areatexto.setText(String.valueOf(subastas.get(i).getOfertas().size()));
+                            notifyAllOferentes(subastas.get(i));
+
+                        }
+                    }
+
+                }
+                if(input.getType() == 5){ //ENTRA para cancelar
+
+                    System.out.println("Entro a cancelar");
+
+                    for(int i = 0; i<this.subastas.size(); i++){
+                        ISubasta subastaTemp =  (Subasta)((CancelarMessage)inputO).getSubasta();
+                        if(subastaTemp.getId() == subastas.get(i).getId()){
+                            //System.out.println("Encontró subasta para rechazar");
+
+                            ((Subasta)subastas.get(i)).setStatus(2);
 
                             areatexto.setText(String.valueOf(subastas.get(i).getOfertas().size()));
                             notifyAllOferentes(subastas.get(i));
