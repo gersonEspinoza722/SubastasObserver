@@ -45,16 +45,15 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
 
     public LogInPanel() {
 
-        JLabel texto = new JLabel("CLIENTE");
+        JLabel texto = new JLabel("AGREGAR OFERENTE A SUBASTA");
         add(texto);
 
-        idSubastaField = new JTextField(20);
+        idSubastaField = new JTextField(5);
         add(idSubastaField);
 
-        ipUserField = new JTextField(20);
-        add(ipUserField);
 
-        sendButton = new JButton("Enviar");
+
+        sendButton = new JButton("Agregar");
         SendOffer sendOfferEvent = new SendOffer();
         sendButton.addActionListener(sendOfferEvent);
         add(sendButton);
@@ -81,12 +80,11 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
     public void notifyObservable() {
 
         IMessage logInMessage;
-       // int idSubasta = Integer.valueOf(idSubastaField.getText());
 
         logInMessage=null;
 
         try {
-            logInMessage = new LogInMessage(1, InetAddress.getLocalHost().getHostAddress());
+            logInMessage = new LogInMessage(Integer.valueOf(idSubastaField.getText()), InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -142,7 +140,7 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
     }
 
 
-    private JTextField ipUserField;
+
     private JTextField idSubastaField;
     private JButton sendButton;
 }

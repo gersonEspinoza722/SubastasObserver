@@ -44,11 +44,18 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
 
     public CreateAuctionPanel(){
 
-        JLabel texto=new JLabel("CLIENTE");
+        JLabel texto=new JLabel("CREAR SUBASTA");
         add(texto);
 
-        ipField=new JTextField(20);
-        add(ipField);
+        minutesField=new JTextField(20);
+        add(minutesField);
+        precioInicial=new JTextField(20);
+        add(precioInicial);
+        topeInicialField=new JTextField(20);
+        add(topeInicialField);
+        idSub=new JTextField(20);
+        add(idSub);
+
         sendButton=new JButton("Enviar");
         CreateAuction createAuctionEvent = new CreateAuction();
         sendButton.addActionListener(createAuctionEvent);
@@ -79,9 +86,10 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
         //Sacamos hora inicio
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
+
         //System.out.println(dtf.format(now));
 /////////////////////////////////////////////////////////////////
-        Producto prod = new Producto(200,0);
+        Producto prod = new Producto(Integer.valueOf(precioInicial.getText()),0);
 
         Subastador subastador = null;
         try {
@@ -89,7 +97,9 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        Subasta subastaNueva = new Subasta(now, null,prod, 200,1,subastador);
+        int minutes=Integer.valueOf(minutesField.getText());
+
+        Subasta subastaNueva = new Subasta(now, now.plusMinutes(minutes),prod, Integer.valueOf(topeInicialField.getText()),Integer.valueOf(idSub.getText()),subastador);
 
 
 
@@ -173,9 +183,14 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
     private JButton sendButton;
 
     //User data
-    private JTextField ipField;
+    private JTextField minutesField;
+    private JTextField precioInicial;
+    private JTextField topeInicialField;
+    private JTextField idSub;
+
+
     //Subasta data
-    private JTextField status;
+
 
 
 

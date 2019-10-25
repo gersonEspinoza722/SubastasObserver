@@ -83,8 +83,14 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
                 ISubasta inputO = (ISubasta) input;
 
                 streamFromClient.close();
-                respuesta.setText("TOPE ACTUAL: "+inputO.getTope()+"de SUBASTA: "+inputO.getId());
                 socket.close();
+                if (inputO != null && ((Subasta) inputO).getStatus() == 0){
+                    respuesta.setText("TOPE ACTUAL: " + inputO.getTope() +" ERES EL GANADOR!!!");
+                }
+                if (inputO != null && ((Subasta) inputO).getStatus() == 3) {
+                    respuesta.setText("TOPE ACTUAL: " + inputO.getTope() + "de SUBASTA: " + inputO.getId());
+                }
+
             }
 
         } catch (IOException e) {

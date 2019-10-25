@@ -36,6 +36,7 @@ class AuctionerFrame extends JFrame{
 class AuctionerPanel extends JPanel implements ISubastador, Runnable{
     private Usuario usuario;
     private ISubasta subasta;
+    private IMessage message;
 
     private static final int type = 0;
 
@@ -44,7 +45,7 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
         JLabel texto=new JLabel("SUBASTADOR");
         add(texto);
 
-        campo1=new JTextField(20);
+        campo1=new JTextField(5);
         add(campo1);
         respuesta=new JTextField(50);
         add(respuesta);
@@ -52,6 +53,12 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
         SendRechazo sendRechazo = new SendRechazo();
         sendButton.addActionListener(sendRechazo);
         add(sendButton);
+
+        endButton=new JButton("Terminar sub.");
+        SendEnd sendEnd= new SendEnd();
+        endButton.addActionListener(sendEnd);
+        add(endButton);
+
         Thread thread =  new Thread(this);
         thread.start();
     }
@@ -111,19 +118,19 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
 
     @Override
     public void notifyObservable() {
-        IMessage rechazoMessage;
+        //IMessage rechazoMessage;
 
-        Subasta sub = new Subasta();
-        sub.setId(1);
+        //Subasta sub = new Subasta();
+        //sub.setId(1);
 
-        rechazoMessage = new RechazoMessage(sub);
+        //rechazoMessage = new RechazoMessage(sub);
 
             try {
-                Socket socket=new Socket(serverIP,88);
+                Socket socket=new Socket("127.0.0.7",88);
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
 
-                objectStreamToServer.writeObject(rechazoMessage);
+                objectStreamToServer.writeObject(message);
 
                 socket.close();
 
@@ -141,12 +148,23 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
     @Override
     public void rechazarOferta() {
         //le ponemos a "subasta" el id
+
+        Subasta sub = new Subasta();
+        sub.setId(Integer.valueOf(campo1.getText()));
+
+        message = new RechazoMessage(sub);
+
         notifyObservable();
     }
 
     @Override
     public void cerrarSubasta() {
+        Subasta sub = new Subasta();
+        sub.setId(Integer.valueOf(campo1.getText()));
 
+        message = new CerrarMessage(sub);
+
+        notifyObservable();
     }
 
     @Override
@@ -177,10 +195,19 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
             rechazarOferta();
         }
     }
+    private class SendEnd implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cerrarSubasta();
+        }
+    }
+
 
 
     private JTextField campo1;
     private JButton sendButton;
+    private JButton endButton;
     private JTextField respuesta;
     private String serverIP;
 
