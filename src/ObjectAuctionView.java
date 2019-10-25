@@ -51,8 +51,12 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
         add(campoSub);
         respuesta=new JTextField(50);
         add(respuesta);
+        ip=new JTextField(15);
+        add(ip);
+
         sendButton=new JButton("Enviar Oferta");
         SendOffer sendOfferEvent = new SendOffer();
+
         sendButton.addActionListener(sendOfferEvent);
         add(sendButton);
 
@@ -64,10 +68,11 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
     public void run() {
         //Pasan varas en el hilo
         try {
-            ServerSocket server = new ServerSocket(9090);
+            ServerSocket server = new ServerSocket(9030);
 
             while (true) {
                 Socket socket = server.accept();
+
 
                 InputStream streamFromClient = socket.getInputStream();
                 ObjectInputStream objectStreamFromClient = new ObjectInputStream(streamFromClient);
@@ -135,7 +140,7 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
 
 
         try {
-                Socket socket=new Socket("127.0.0.1",88);
+                Socket socket=new Socket(ip.getText(),88);
                // DataOutputStream streamToServer = new DataOutputStream(socket.getOutputStream());
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
@@ -189,6 +194,7 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
     private JTextField campo1;
     private JTextField campoSub;
     private JTextField respuesta;
+    private JTextField ip;
     private JButton sendButton;
 
 }

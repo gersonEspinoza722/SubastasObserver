@@ -51,6 +51,9 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
         idSubastaField = new JTextField(5);
         add(idSubastaField);
 
+        ip = new JTextField(15);
+        add(ip);
+
 
 
         sendButton = new JButton("Agregar");
@@ -90,7 +93,7 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
         }
 
         try {
-                Socket socket = new Socket("127.0.0.1", 88);
+                Socket socket = new Socket(ip.getText(), 88);
                 OutputStream streamToServer = socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer = new ObjectOutputStream(streamToServer);
 
@@ -142,5 +145,6 @@ class LogInPanel extends JPanel implements IOferente, IMessage {
 
 
     private JTextField idSubastaField;
+    private JTextField ip;
     private JButton sendButton;
 }

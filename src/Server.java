@@ -59,11 +59,13 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
         ArrayList<IOferente> oferentesNotify = subastaNotify.getOferentes();
         for (int i=0; i<oferentesNotify.size(); i++){ //hacer for correcto
             try {
-                Socket socket=new Socket(oferentesNotify.get(i).getIp(),9090);
+                Socket socket=new Socket(oferentesNotify.get(i).getIp(),9030);
+
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
 
                 objectStreamToServer.writeObject(subastaNotify);
+                objectStreamToServer.close();
                 socket.close();
 
 
