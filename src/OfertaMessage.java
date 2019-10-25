@@ -1,4 +1,6 @@
-public class OfertaMessage implements IMessage {
+import java.io.Serializable;
+
+public class OfertaMessage implements IMessage, Serializable, IObserver{
     ISubasta subasta;
     int monto;
     String ip;
@@ -10,8 +12,13 @@ public class OfertaMessage implements IMessage {
     }
 
     @Override
-    public Class getType() {
-        return this.getType();
+    public void notifyObservable() {
+
+    }
+
+    @Override
+    public int getType() {
+        return 0;
     }
 
     @Override

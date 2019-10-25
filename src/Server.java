@@ -19,7 +19,7 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
     ArrayList<ISubasta> subastas;
 
     public ServerFrame(){
-
+        subastas = new ArrayList<>();
         //this.observers = new ArrayList<>();
 
         setBounds(1200,300,280,350);
@@ -95,7 +95,7 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
             ServerSocket server = new ServerSocket(88);
 
             while (true) {
-                //System.out.println("while");
+
                 Socket socket = server.accept();
 
                 InputStream streamFromClient = socket.getInputStream();
@@ -106,23 +106,73 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
 
                 try {
                     input = (IObserver) objectStreamFromClient.readObject();
+                    //System.out.println("Encontro el objeto");
+                    //System.out.println("TIPO: "+input.getType());
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 
                 IMessage inputO = (IMessage) input;
-                if(input.getType() == OfertaMessage.class){
+                if(input.getType() == 0){//ENTRA PARA PUJAR EN SUBASTA
+
                     for(int i = 0; i<this.subastas.size(); i++){
-                        ISubasta subastaTemp = ((IMessage) input).getSubasta();
-                        if(subastaTemp.getId() == subastas.get(i).getId() && subastas.get(i).getTope() < subastaTemp.getTope()){
-                            subastas.get(i).setTope(subastaTemp.getTope());
+                        ISubasta subastaTemp = inputO.getSubasta();
+                        if(subastaTemp.getId() == subastas.get(i).getId() && subastas.get(i).getTope() <  ((OfertaMessage)inputO).getMonto()){
+                            System.out.println("Encontro la subasta para pujar");
+                            subastas.get(i).setTope(((OfertaMessage)inputO).getMonto());
                             subastas.get(i).addOferta(inputO);
-                            areatexto.setText(Integer.toString(inputO.getSubasta().getTope()));
+                            areatexto.setText(Integer.toString(subastas.get(i).getTope()));
                             notifyAllOferentes(subastas.get(i));
-                            break;
+
                         }
                     }
-                }else {
+                }
+                if(input.getType() == 1){ //ENTRA CUANDO LOGGEA OFERENTE A SUBASTA
+                    System.out.println("Entro a loggear");
+
+                    //areatexto.setText(String.valueOf(inputO.getSubasta().getId()));
+                   for(int i = 0; i<this.subastas.size(); i++){
+                        ISubasta subastaTemp = inputO.getSubasta();
+                        if(subastaTemp.getId() == subastas.get(i).getId()){
+                            subastas.get(i).addOferente(((IOferente)((LogInMessage) inputO).usuario));
+                            System.out.println(((IOferente)((LogInMessage) inputO).usuario).getIp());
+                            areatexto.setText(((IOferente)((LogInMessage) inputO).usuario).getIp()+"  Oferentes:"+subastas.get(i).getOferentes().size()+" de la subasta"+ subastas.get(i).getId());
+                            //notifyAllOferentes(subastas.get(i));
+
+                        }
+                    }
+                }
+                if(input.getType() == 2){ //ENTRA PARA CREAR SUBASTA CON SUBASTADOR
+                    //areatexto.setText(String.valueOf(inputO.getSubasta().getId()));
+                    System.out.println("Entro a crear subasta");
+                        ISubasta subastaTemp = (Subasta)((CreateAuctionMessage)inputO).getSubasta();
+                        subastas.add(subastaTemp);
+
+
+                        areatexto.setText(subastaTemp.getSubastador().getIp()+" SUBASTA: " + subastaTemp.getId());
+                        //notifyAllOferentes(subastas.get(i));
+
+                }
+                if(input.getType() == 3){ //ENTRA rechazo de oferta
+
+                    System.out.println("Entro a rechazo");
+
+                    for(int i = 0; i<this.subastas.size(); i++){
+                        ISubasta subastaTemp =  (Subasta)((RechazoMessage)inputO).getSubasta();
+                        if(subastaTemp.getId() == subastas.get(i).getId()){
+                            //System.out.println("Encontró subasta para rechazar");
+                            subastas.get(i).getOfertas().remove(subastas.get(i).getOfertas().size()-1);
+                            subastas.get(i).setTope(((OfertaMessage)subastas.get(i).getOfertas().get(subastas.get(i).getOfertas().size()-1)).getMonto());
+
+                            areatexto.setText(String.valueOf(subastas.get(i).getOfertas().size()));
+                            notifyAllOferentes(subastas.get(i));
+
+                        }
+                    }
+
+                }
+
+                else {
 
                 }
                 socket.close();

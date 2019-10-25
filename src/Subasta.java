@@ -1,10 +1,12 @@
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Subasta implements ISubasta{
+public class Subasta implements ISubasta, Serializable {
     int id;
-    private Date horaInicio;
-    private Date horaFinal;
+    private LocalDateTime horaInicio;
+    private LocalDateTime horaFinal;
     private Producto producto;
     private int status;
     private int tope;
@@ -12,12 +14,21 @@ public class Subasta implements ISubasta{
     private ArrayList<IOferente> oferentes;
     private ISubastador subastador;
 
-    public Subasta(Date horaInicio, Date horaFinal, Producto producto, int tope) {
+    public Subasta(LocalDateTime horaInicio, LocalDateTime horaFinal, Producto producto, int tope, int id, ISubastador sub) {
         this.horaInicio = horaInicio;
         this.horaFinal = horaFinal;
         this.producto = producto;
         this.status = Status.INICIADA;
         this.tope = tope;
+        this.id=id;
+        this.subastador=sub;
+        oferentes = new ArrayList<>();
+        ofertas = new ArrayList<>();
+
+    }
+
+    public Subasta() {
+
     }
 
 
@@ -41,19 +52,19 @@ public class Subasta implements ISubasta{
         this.oferentes = oferentes;
     }
 
-    public Date getHoraInicio() {
+    public LocalDateTime getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(Date horaInicio) {
+    public void setHoraInicio(LocalDateTime horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public Date getHoraFinal() {
+    public LocalDateTime getHoraFinal() {
         return horaFinal;
     }
 
-    public void setHoraFinal(Date horaFinal) {
+    public void setHoraFinal(LocalDateTime horaFinal) {
         this.horaFinal = horaFinal;
     }
 
@@ -83,9 +94,11 @@ public class Subasta implements ISubasta{
     }
 
     @Override
-    public void addOferta(ISubasta subasta) {
-
+    public void addOferta(IMessage ofertaNotify) {
+        this.ofertas.add(ofertaNotify);
     }
+
+
 
 
     public void setOfertas(ArrayList<IMessage> ofertas) {
@@ -103,7 +116,7 @@ public class Subasta implements ISubasta{
 
     @Override
     public void addOferente(IOferente oferente) {
-
+oferentes.add(oferente);
     }
 
     @Override

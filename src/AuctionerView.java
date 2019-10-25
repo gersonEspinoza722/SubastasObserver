@@ -22,7 +22,7 @@ class AuctionerFrame extends JFrame{
     public AuctionerFrame(){
 
         setBounds(600,300,280,350);
-        AuctionPanel milamina=new AuctionPanel();
+        AuctionerPanel milamina=new AuctionerPanel();
 
         add(milamina);
 
@@ -41,11 +41,13 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
 
     public AuctionerPanel(){
 
-        JLabel texto=new JLabel("CLIENTE");
+        JLabel texto=new JLabel("SUBASTADOR");
         add(texto);
 
         campo1=new JTextField(20);
         add(campo1);
+        respuesta=new JTextField(50);
+        add(respuesta);
         sendButton=new JButton("Enviar");
         SendRechazo sendRechazo = new SendRechazo();
         sendButton.addActionListener(sendRechazo);
@@ -57,7 +59,7 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
     public void run() {
         //Pasan varas en el hilo
         try {
-            ServerSocket server = new ServerSocket(9090);
+            ServerSocket server = new ServerSocket(9050);
 
             while (true) {
                 Socket socket = server.accept();
@@ -66,19 +68,20 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
                 ObjectInputStream objectStreamFromClient = new ObjectInputStream(streamFromClient);
 
                 //validacion de objetos
-                IObservable input = null;
+
+                ISubasta input = null;
                 try {
-                    input = (IObservable) objectStreamFromClient.readObject();
+                    input = (ISubasta) objectStreamFromClient.readObject();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 
                 ISubasta inputO = (ISubasta) input;
-                campo1.setText(Integer.toString(inputO.getTope()));
+                //campo1.setText(Integer.toString(inputO.getTope()));
                 //notifyAllOferentes();
 
                 streamFromClient.close();
-                System.out.println(input);
+                respuesta.setText("TOPE DE SU SUBASTA: "+inputO.getTope()+"(IDENTIFICADOR +"+inputO.getId()+")");
 
                 socket.close();
             }
@@ -108,16 +111,19 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
 
     @Override
     public void notifyObservable() {
-        if(!campo1.getText().isEmpty()){
-            int value = Integer.valueOf(campo1.getText());
+        IMessage rechazoMessage;
+
+        Subasta sub = new Subasta();
+        sub.setId(1);
+
+        rechazoMessage = new RechazoMessage(sub);
 
             try {
                 Socket socket=new Socket(serverIP,88);
-                // DataOutputStream streamToServer = new DataOutputStream(socket.getOutputStream());
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
 
-                objectStreamToServer.writeObject(subasta);
+                objectStreamToServer.writeObject(rechazoMessage);
 
                 socket.close();
 
@@ -125,12 +131,11 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
+
     }
 
     @Override
-    public Class getType() {
-        return null;
+    public int getType() {return 3;
     }
 
     @Override
@@ -176,6 +181,7 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
 
     private JTextField campo1;
     private JButton sendButton;
+    private JTextField respuesta;
     private String serverIP;
 
 }

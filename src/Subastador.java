@@ -1,13 +1,18 @@
-public class Subastador extends Usuario implements ISubastador{
-    private Subasta subasta;
+import java.io.Serializable;
 
-    public Subastador(String username, Subasta subasta) {
-        super(username);
-        this.subasta = subasta;
+public class Subastador extends Usuario implements ISubastador, Serializable {
+    private Subasta subasta;
+    private String ip;
+
+    public Subastador(String ip) {
+        this.ip=ip;
+        //this.subasta = subasta;
     }
 
+
+
     @Override
-    public void aceptarOferta(int monto, Usuario usuario) {
+    public void rechazarOferta() {
 
     }
 
@@ -27,17 +32,23 @@ public class Subastador extends Usuario implements ISubastador{
     }
 
     @Override
+    public void createAuction() {
+
+    }
+
+    @Override
     public void notifyObservable() {
 
     }
 
     @Override
-    public String getIp() {
-        return null;
+    public int getType() {
+        return 4;
     }
 
     @Override
-    public int getType() {
-        return 0;
+    public String getIp() {
+        return ip;
     }
+
 }

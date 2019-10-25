@@ -14,7 +14,7 @@ public class ServerMessage implements IMessage {
     }
 
     @Override
-    public Class getType() {
-        return this.getType();
+    public int getType() {
+        return 3;
     }
 }

@@ -1,4 +1,5 @@
 public interface IMessage {
-    Class getType();
+    int getType();
     ISubasta getSubasta();
+
 }

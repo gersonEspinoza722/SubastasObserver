@@ -1,7 +1,13 @@
-public class Oferente extends Usuario implements IOferente{
+import java.io.Serializable;
 
-    public Oferente(String username) {
-        super(username);
+public class Oferente extends Usuario implements IOferente, Serializable {
+
+    protected String ip;
+    public Oferente(String ip) {
+        this.ip=ip;
+    }
+
+    public Oferente() {
     }
 
     @Override
@@ -26,12 +32,16 @@ public class Oferente extends Usuario implements IOferente{
     }
 
     @Override
-    public String getIp() {
-        return null;
+    public int getType() {
+        return 6;
     }
 
     @Override
-    public int getType() {
-        return 0;
+    public String getIp() {
+
+        return this.ip;
     }
+
+
+
 }

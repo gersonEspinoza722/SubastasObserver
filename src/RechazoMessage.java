@@ -1,13 +1,23 @@
-public class RechazoMessage implements IMessage{
+import java.io.Serializable;
+
+public class RechazoMessage implements IMessage, Serializable, IObserver{
     Subasta subasta;
+    int type;
 
     public RechazoMessage(Subasta subasta) {
         this.subasta = subasta;
+        this.type=3;
     }
 
     @Override
-    public Class getType() {
-        return this.getType();
+    public void notifyObservable() {
+
+    }
+
+
+    @Override
+    public int getType() {
+        return this.type;
     }
 
     public Subasta getSubasta() {

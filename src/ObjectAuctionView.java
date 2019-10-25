@@ -42,15 +42,21 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
 
     public AuctionPanel(){
 
-        JLabel texto=new JLabel("CLIENTE");
+        JLabel texto=new JLabel("OFERTAR A SUBASTA EXISTENTE");
         add(texto);
 
         campo1=new JTextField(20);
         add(campo1);
-        sendButton=new JButton("Enviar");
+        campoSub=new JTextField(20);
+        add(campoSub);
+        respuesta=new JTextField(50);
+        add(respuesta);
+        sendButton=new JButton("Enviar Oferta");
         SendOffer sendOfferEvent = new SendOffer();
         sendButton.addActionListener(sendOfferEvent);
         add(sendButton);
+
+
         Thread thread =  new Thread(this);
         thread.start();
     }
@@ -67,20 +73,17 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
                 ObjectInputStream objectStreamFromClient = new ObjectInputStream(streamFromClient);
 
                 //validacion de objetos
-                IObservable input = null;
+                ISubasta input = null;
                 try {
-                    input = (IObservable) objectStreamFromClient.readObject();
+                    input = (ISubasta) objectStreamFromClient.readObject();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 
                 ISubasta inputO = (ISubasta) input;
-                campo1.setText(Integer.toString(inputO.getTope()));
-                //notifyAllOferentes();
 
                 streamFromClient.close();
-                System.out.println(input);
-
+                respuesta.setText("TOPE ACTUAL: "+inputO.getTope()+"de SUBASTA: "+inputO.getId());
                 socket.close();
             }
 
@@ -109,16 +112,26 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
 
     @Override
     public void notifyObservable() {
-        if(!campo1.getText().isEmpty()){
-            int value = Integer.valueOf(campo1.getText());
 
-            try {
-                Socket socket=new Socket(serverIP,88);
+        IMessage ofertaMessage;
+        ofertaMessage = null;
+        Subasta sub = new Subasta();
+        sub.setId(Integer.valueOf(campoSub.getText()));
+        try {
+            ofertaMessage= new OfertaMessage(sub, Integer.valueOf(campo1.getText()), InetAddress.getLocalHost().getHostAddress());
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+                Socket socket=new Socket("127.0.0.1",88);
                // DataOutputStream streamToServer = new DataOutputStream(socket.getOutputStream());
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
 
-                objectStreamToServer.writeObject(this);
+                objectStreamToServer.writeObject(ofertaMessage);
 
                 socket.close();
 
@@ -126,12 +139,12 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
+
     }
 
     @Override
-    public Class getType() {
-        return this.getClass();
+    public int getType() {
+        return this.type;
     }
 
     @Override
@@ -165,7 +178,8 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
 
 
     private JTextField campo1;
+    private JTextField campoSub;
+    private JTextField respuesta;
     private JButton sendButton;
-    private String serverIP;
 
 }

@@ -2,14 +2,17 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.net.UnknownHostException;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 public class CreateAuctionView {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
 
-        AuctionFrame mimarco=new AuctionFrame();
+        CreateAuctionFrame mimarco=new CreateAuctionFrame();
 
         mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -22,7 +25,7 @@ class CreateAuctionFrame extends JFrame{
     public CreateAuctionFrame(){
 
         setBounds(600,300,280,350);
-        AuctionPanel milamina=new AuctionPanel();
+        CreateAuctionPanel milamina=new CreateAuctionPanel();
 
         add(milamina);
 
@@ -47,8 +50,8 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
         ipField=new JTextField(20);
         add(ipField);
         sendButton=new JButton("Enviar");
-        CreateAution createAutionEvent = new CreateAution();
-        sendButton.addActionListener(createAutionEvent);
+        CreateAuction createAuctionEvent = new CreateAuction();
+        sendButton.addActionListener(createAuctionEvent);
         add(sendButton);
 
     }
@@ -72,14 +75,36 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
 
     @Override
     public void notifyObservable() {
+        System.out.println("Notify");
+        //Sacamos hora inicio
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        //System.out.println(dtf.format(now));
+/////////////////////////////////////////////////////////////////
+        Producto prod = new Producto(200,0);
+
+        Subastador subastador = null;
+        try {
+            subastador = new Subastador(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        Subasta subastaNueva = new Subasta(now, null,prod, 200,1,subastador);
+
+
+
+        IMessage createAuctionMessage;
+
+        createAuctionMessage = new CreateAuctionMessage(subastaNueva,subastador);
 
             try {
+
                 Socket socket=new Socket("127.0.0.1",88);
-                // DataOutputStream streamToServer = new DataOutputStream(socket.getOutputStream());
                 OutputStream streamToServer=socket.getOutputStream();
                 ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
-
-                objectStreamToServer.writeObject(subasta);
+                System.out.println("Va a escribir");
+                objectStreamToServer.writeObject(createAuctionMessage);
+                objectStreamToServer.close();
 
                 socket.close();
 
@@ -88,6 +113,11 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
                 ex.printStackTrace();
 
         }
+    }
+
+    @Override
+    public int getType() {
+        return 8;
     }
 
 
@@ -113,13 +143,7 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
 
     @Override
     public void createAuction() {
-        String ip = ipField.getText();
-
-        //Usuario userSubastador = new User()
-
-        //Producto productoSubastado = new Producto()
-
-        //subasta = new Subasta();
+        System.out.println("BOTON PRESSED");
 
         notifyObservable();
 
@@ -127,7 +151,15 @@ class CreateAuctionPanel extends JPanel implements ISubastador{
     }
 
 
-    private class CreateAution implements ActionListener {
+
+
+    @Override
+    public String getIp() {
+        return null;
+    }
+
+
+    private class CreateAuction implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
