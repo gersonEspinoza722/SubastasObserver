@@ -38,27 +38,35 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
     }
 
     @Override
-    public void notifyAllOferentes() {
+    public void notifyAllOferentes(ISubasta subastaNotify) {
 
-
-        for (int i=0; i<subastas.size(); i++){ //hacer for correcto
-            //observers.get(i).notifyObservable();
+        ArrayList<IOferente> oferentesNotify = subastaNotify.getOferentes();
+        for (int i=0; i<oferentesNotify.size(); i++){ //hacer for correcto
             try {
-                Socket socket=new Socket("127.0.0.1",9090);
-                //Socket socket2=new Socket("192.168.0.7",9090);
-                DataOutputStream streamToOferente = new DataOutputStream(socket.getOutputStream());
-                streamToOferente.writeUTF("respuesta"); //implementar respuesta
+                Socket socket=new Socket(oferentesNotify.get(i).getIp(),9090);
+                OutputStream streamToServer=socket.getOutputStream();
+                ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
 
-               // DataOutputStream streamToOferente2 = new DataOutputStream(socket2.getOutputStream());
-               //streamToOferente2.writeUTF("respuesta linda"); //implementar respuesta
-
-               // socket2.close();
-               // streamToOferente2.close();
+                objectStreamToServer.writeObject(subastaNotify);
                 socket.close();
+
 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+        ISubastador subastadorNotify = subastaNotify.getSubastador();
+        try {
+            Socket socket=new Socket(subastadorNotify.getIp(),9050);
+            OutputStream streamToServer=socket.getOutputStream();
+            ObjectOutputStream objectStreamToServer=new ObjectOutputStream(streamToServer);
+
+            objectStreamToServer.writeObject(subastaNotify);
+            socket.close();
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -102,20 +110,22 @@ class ServerFrame extends JFrame implements Runnable, IObservable{
                     e.printStackTrace();
                 }
 
-                if(input.getType() == 0){
-                    IOferente inputO = (IOferente) input;
-                    areatexto.setText(Integer.toString(inputO.getMonto()));
-                    notifyAllOferentes();
-                }else{
+                IMessage inputO = (IMessage) input;
+                if(input.getType() == OfertaMessage.class){
+                    for(int i = 0; i<this.subastas.size(); i++){
+                        ISubasta subastaTemp = ((IMessage) input).getSubasta();
+                        if(subastaTemp.getId() == subastas.get(i).getId() && subastas.get(i).getTope() < subastaTemp.getTope()){
+                            subastas.get(i).setTope(subastaTemp.getTope());
+                            subastas.get(i).addOferta(inputO);
+                            areatexto.setText(Integer.toString(inputO.getSubasta().getTope()));
+                            notifyAllOferentes(subastas.get(i));
+                            break;
+                        }
+                    }
+                }else {
 
                 }
-
                 socket.close();
-
-
-
-
-
             }
 
         } catch (IOException e) {

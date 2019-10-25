@@ -4,4 +4,5 @@ public interface ISubastador extends IObserver{
     void cancelarSubasta();
     void enviarMensaje(Usuario usuario);
     void createAuction();
+    String getIp();
 }

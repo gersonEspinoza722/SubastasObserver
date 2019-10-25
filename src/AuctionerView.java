@@ -129,6 +129,11 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
     }
 
     @Override
+    public Class getType() {
+        return null;
+    }
+
+    @Override
     public void rechazarOferta() {
         //le ponemos a "subasta" el id
         notifyObservable();
@@ -152,6 +157,11 @@ class AuctionerPanel extends JPanel implements ISubastador, Runnable{
     @Override
     public void createAuction() {
 
+    }
+
+    @Override
+    public String getIp() {
+        return this.usuario.ip;
     }
 
 

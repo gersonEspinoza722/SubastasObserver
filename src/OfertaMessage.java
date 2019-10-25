@@ -18,4 +18,24 @@ public class OfertaMessage implements IMessage {
     public ISubasta getSubasta() {
         return this.subasta;
     }
+
+    public void setSubasta(ISubasta subasta) {
+        this.subasta = subasta;
+    }
+
+    public int getMonto() {
+        return monto;
+    }
+
+    public void setMonto(int monto) {
+        this.monto = monto;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
 }

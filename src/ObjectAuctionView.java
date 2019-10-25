@@ -149,6 +149,11 @@ class AuctionPanel extends JPanel implements Runnable, IOferente, IMessage{
         return Integer.valueOf(campo1.getText());
     }
 
+    @Override
+    public String getIp() {
+        return this.usuario.ip;
+    }
+
 
     private class SendOffer implements ActionListener{
 

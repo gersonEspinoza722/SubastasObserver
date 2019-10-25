@@ -8,6 +8,7 @@ public class Subasta implements ISubasta{
     private Producto producto;
     private int status;
     private int tope;
+    private ArrayList<IMessage> ofertas;
     private ArrayList<IOferente> oferentes;
     private ISubastador subastador;
 
@@ -18,6 +19,7 @@ public class Subasta implements ISubasta{
         this.status = Status.INICIADA;
         this.tope = tope;
     }
+
 
     public int getId() {
         return id;
@@ -73,6 +75,30 @@ public class Subasta implements ISubasta{
 
     public int getTope() {
         return tope;
+    }
+
+    @Override
+    public ArrayList<IMessage> getOfertas() {
+        return ofertas;
+    }
+
+    @Override
+    public void addOferta(ISubasta subasta) {
+
+    }
+
+
+    public void setOfertas(ArrayList<IMessage> ofertas) {
+        this.ofertas = ofertas;
+    }
+
+    @Override
+    public ISubastador getSubastador() {
+        return subastador;
+    }
+
+    public void setSubastador(ISubastador subastador) {
+        this.subastador = subastador;
     }
 
     @Override
